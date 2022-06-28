@@ -1,1 +1,38 @@
-<p>Hi</p>
+<div *ngIf="movie else no_movies" >
+    <div class="card">
+        <div class="row">
+            <div class="col-md-4">
+                <img src="{{ movie.imageUrl }}" class="img-fluid rounded-start" >
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h1 class="card-title">{{movie.title}}</h1>
+                    <p class="card-text">{{movie.description}}</p>
+                </div>
+                <div class="mb-2">
+                    <h6 *ngFor="let item of comments">Comment: {{item.title}}</h6>
+                </div>
+                <div class="row">
+                    <form (ngSubmit)="createComment(name.value)">
+                        <div class="col-md-6">
+                            <input #name type="text" class="form-control"/>
+                        </div>
+                        <div class="col-md-3">
+
+                            <button type="submit" class="btn btn-primary ">Create</button>
+                        </div>
+                    
+                    </form>
+                </div>
+            </div>
+
+            
+        </div>
+    </div>
+</div>
+
+<ng-template #no_movies>
+            <div class="alert alert-warning">
+                No movie found.
+            </div>
+</ng-template>

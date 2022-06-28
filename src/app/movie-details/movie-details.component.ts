@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MovieComment } from '../models/comment';
 import { Movie } from '../models/movie';
 import { MovieCommentService } from '../services/movie.comment.service';
 import { MovieService } from '../services/movie.service';
@@ -13,23 +14,35 @@ import { MovieService } from '../services/movie.service';
 export class MovieDetailsComponent implements OnInit {
 
   movie:Movie;
+  comments:MovieComment[]=[];
+  id:any="";
 
   constructor(private movieService:MovieService,
     private movieCommentServ:MovieCommentService,
-              private activatedRouted:ActivatedRoute) { }
+              private activatedRouted:ActivatedRoute,private router:Router) { }
 
   ngOnInit() {
     this.activatedRouted.params.subscribe(params=>{
+      this.id=params["movieId"];
       this.movieService.getMovieById(params["movieId"])
       .subscribe(data=>{
         this.movie=data;
       })
     })
-    this.movieCommentServ.
+    this.activatedRouted.params.subscribe(params=>{
+      this.movieCommentServ.getComments(params["movieId"])
+      .subscribe(data=>{
+        this.comments=data;
+      })
+    })
   }
 
-  AddComment(comment:string){
-this.movieCommentServ.createComment(comment,this.movie.id);
+  createComment(comment:string){
+    const commentS:MovieComment= {
+      title:comment,
+      movieId:this.id
+    }
+this.movieCommentServ.createComment(commentS).subscribe(data=>{this.router.navigate(['/movies'])});
   }
 
 }
